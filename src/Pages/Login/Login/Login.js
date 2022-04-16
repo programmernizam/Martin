@@ -1,44 +1,63 @@
-import React, { useRef } from "react";
-import { Button, Container, Form } from "react-bootstrap";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
+import { Container, Form } from "react-bootstrap";
+import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
+import { Link, useNavigate } from "react-router-dom";
+import "./Login.css";
 import auth from "../../../Firebase.init";
 import SocialLogin from "../../Shared/SocialLogin/SocialLogin";
-import { useCreateUserWithEmailAndPassword } from 'react-firebase-hooks/auth';
 
 const Login = () => {
-    const emailRef = useRef('');
-    const passwordRef = useRef('');
-    const [
-        createUserWithEmailAndPassword,
-        user,
-        error,
-      ] = useCreateUserWithEmailAndPassword(auth);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const navigate = useNavigate()
+  const [signInWithEmailAndPassword, user, error] =
+    useSignInWithEmailAndPassword(auth);
 
-    const handleSubmit = event =>{
-        event.preventDefault();
-        const email = emailRef.current.value;
-        const password = passwordRef.current.value;
-        createUserWithEmailAndPassword(email, password);
+    if(user){
+        navigate("/home")
     }
+  const handelEmailBlur = (event) => {
+    setEmail(event.target.value);
+  };
+  const handelPasswordBlur = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const handelUserSignIn = (event) => {
+    event.preventDefault();
+    signInWithEmailAndPassword(email, password);
+  };
   return (
     <Container>
       <div
-        style={{ width: "450px", background:"#7879FF"}}
+        style={{ width: "450px", background: "#3EB489" }}
         className="mx-auto my-5 shadow p-5 border rounded"
       >
         <h2 className="text-uppercase text-white">Login here</h2>
-        <Form onSubmit={handleSubmit}>
-          <Form.Group className="mb-3" controlId="formBasicEmail">
-            <Form.Control ref={emailRef} type="email" placeholder="Enter email" />
-          </Form.Group>
-
-          <Form.Group className="mb-3" controlId="formBasicPassword">
-            <Form.Control ref={passwordRef} type="password" placeholder="Password" />
-          </Form.Group>
+        <Form>
+          <input
+            onBlur={handelEmailBlur}
+            className="d-block w-100 p-2 my-3 rounded border-0"
+            type="email"
+            name="email"
+            placeholder="Email address"
+            id=""
+          />
+          <input
+            onBlur={handelPasswordBlur}
+            className="d-block w-100 p-2 my-3 rounded border-0"
+            type="password"
+            name="password"
+            placeholder="Password"
+            id=""
+          />
           <p className="text-danger">{error?.message}</p>
-          <Button className="px-5" variant="light" type="submit">
-            Login
-          </Button>
+          <input
+            onClick={handelUserSignIn}
+            className="btn btn-light px-5"
+            type="submit"
+            value="Login"
+          />
         </Form>
         <p className="mt-2 text-white">
           New To Martin?{" "}
