@@ -3,18 +3,21 @@
     "id": "unique_id_1",
     "img": "https://i.ibb.co/TPYQyrx/complete-oral-exam-dentist-woodbridge.jpg",
     "name": "The oral exam",
+    "price": "99",
     "text": " An oral exam, commonly referred to as a dental checkup, is the process used by dentists to carefully review your oral health. Oral exams typically involve the entire mouth, as a component of a first-time visit or a regular 6-month check-up."
   },
   {
     "id": "unique_id_2",
     "img": "https://i.ibb.co/RDTqDPq/woman-patient-dentist.jpg",
     "name": "Teeth whitening",
+    "price": "99",
     "text": " Want a brighter smile? When it comes to tooth-whitening, you've got two options: in-office-based teeth bleaching, or at-home care.Generally, the longer you keep a stronger solution on your teeth, the whiter your teeth become."
   },
   {
     "id": "unique_id_3",
     "img": "https://i.ibb.co/8gHmpb2/patient-red-glasses-sits-chair-dentist-office-while-doctor-whiten-her-teeth.jpg",
     "name": "Teeth repair",
+    "price": "99",
     "text": " The dentist uses dental fillings to fix or repair chipped or broken tooth by using the restorative material.  Typically, the filling is a temporary solution for decayed teeth due to trauma or cavities. Tooth extraction is for severely damaged or decayed tooth."
   }
 ]
