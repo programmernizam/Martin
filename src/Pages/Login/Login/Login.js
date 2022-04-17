@@ -17,12 +17,6 @@ const Login = () => {
   const [signInWithEmailAndPassword, user, loading, error] =
     useSignInWithEmailAndPassword(auth);
 
-  useEffect(() => {
-    if (user) {
-      navigate(from, { replace: true });
-    }
-  }, [user]);
-
   const handleSubmit = (event) => {
     event.preventDefault();
     const email = emailRef.current.value;
@@ -30,6 +24,11 @@ const Login = () => {
 
     signInWithEmailAndPassword(email, password);
   };
+  useEffect(() => {
+    if (user) {
+      navigate(from, { replace: true });
+    }
+  }, [user]);
 
   const navigateRegister = (event) => {
     navigate("/register");
@@ -55,6 +54,9 @@ const Login = () => {
             placeholder="Password"
             required
           />
+          {
+            loading && <p className="text-white">loading...</p>
+          }
           <p className="text-warning">{error?.message}</p>
           <input type="submit" value="Login" className="input-submit" />
           <p className="text-white">
