@@ -1,80 +1,112 @@
-import React, { useState } from "react";
-import { Button, Container, Form } from "react-bootstrap";
-import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useRef, useState } from "react";
+import "./SignUp.css";
+import { Container } from "react-bootstrap";
+import {
+  useCreateUserWithEmailAndPassword,
+} from "react-firebase-hooks/auth";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import auth from "../../../Firebase.init";
 import SocialLogin from "../../Shared/SocialLogin/SocialLogin";
 
 const SignUp = () => {
-    const [email, setEmail] = useState('')
-    const [password,setPassword] = useState('')
-    const [confirmPassword, setConfirmPassword] = useState('')
-    const [error, setError] = useState('')
-    const navigate = useNavigate()
-    const [
-        createUserWithEmailAndPassword,
-        user,
-      ] = useCreateUserWithEmailAndPassword(auth);
+  const nameRef = useRef("");
+  const emailRef = useRef("");
+  const passwordRef = useRef("");
+  const confirmPasswordRef = useRef("");
+  const navigate = useNavigate();
+  const location = useLocation();
+  const [errors, setErrors] = useState("");
 
-      if(user){
-        navigate("/home")
+  let from = location.state?.from?.pathname || "/";
+
+  const [createUserWithEmailAndPassword, user, loading, error] =
+    useCreateUserWithEmailAndPassword(auth);
+
+  useEffect(() => {
+    if (user) {
+      navigate(from, { replace: true });
     }
-    const handelEmailBlur = event =>{
-        setEmail(event.target.value)
+  }, [user]);
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    const name = nameRef.current.value;
+    const email = emailRef.current.value;
+    const password = passwordRef.current.value;
+    const confirmPassword = confirmPasswordRef.current.value;
+
+    if (password !== confirmPassword) {
+      setErrors("Password did't match");
+      return;
     }
-    const handelPasswordBlur = event =>{
-        setPassword(event.target.value)
+    if (password.length < 6) {
+      setErrors("Enter password at last 6 character");
+      return;
     }
-    const handelConfirmPasswordBlur = event =>{
-        setConfirmPassword(event.target.value)
-    }
-    const handelSubmit = event =>{
-        event.preventDefault();
-        if(password !== confirmPassword){
-            setError("Password did't match!")
-            return;
-        }
-        if(password.length < 6){
-            setError("Password must be 6 characters or longer");
-            return
-        }
-        
-        createUserWithEmailAndPassword(email, password)
-    }
+    setErrors("")
+    createUserWithEmailAndPassword(email, password, name);
+  };
+
+  const navigateLogin = () => {
+    navigate("/login");
+  };
   return (
-    <div>
-      <Container>
-        <div
-          style={{ width: "450px", background: "#3EB489" }}
-          className="mx-auto my-5 shadow p-5 border rounded"
-        >
-          <h2 className="text-uppercase text-white">Register here</h2>
-          <Form>
-            <Form.Group className="mb-3" controlId="formBasicEmail">
-              <Form.Control onBlur={handelEmailBlur} type="email" placeholder="Enter email" />
-            </Form.Group>
-
-            <Form.Group className="mb-3" controlId="formBasicPassword">
-              <Form.Control onBlur={handelPasswordBlur} type="password" placeholder="Password" />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="formBasicConfirmPassword">
-              <Form.Control onBlur={handelConfirmPasswordBlur} type="password" placeholder="Confirm Password" />
-            </Form.Group>
-            <p className="text-danger">{error}</p>
-            <Button onClick={handelSubmit} className="px-5" variant="light" type="submit">
-              Sign Up
-            </Button>
-          </Form>
-          <p className="mt-2 text-white">
-            Already have account?{" "}
-            <Link className="text-decoration-none text-warning" to={"/login"}>
-              Login Now!
+    <Container>
+      <div className="shadow p-5 my-5 mx-auto" id="login-form">
+        <h2>Login Here</h2>
+        <form onSubmit={handleSubmit}>
+          <input
+            ref={nameRef}
+            className="input-filed"
+            type="text"
+            name="name"
+            placeholder="Full Name"
+            required
+          />
+          <input
+            ref={emailRef}
+            className="input-filed"
+            type="email"
+            name="email"
+            placeholder="Email Address"
+            required
+          />
+          <input
+            ref={passwordRef}
+            className="input-filed"
+            type="password"
+            name="password"
+            placeholder="Password"
+            required
+          />
+          <input
+            ref={confirmPasswordRef}
+            className="input-filed"
+            type="password"
+            name="ConfirmPassword"
+            placeholder="Confirm Password"
+            required
+          />
+          <p className="text-warning">{error?.message}</p>
+          <p className="text-danger">{errors}</p>
+          <input
+            type="submit"
+            value="SignUP"
+            className="input-submit"
+          />
+          <p className="text-white">
+            Not a member?{" "}
+            <Link
+              className="text-decoration-none text-warning"
+              to={"/login"}
+              onClick={navigateLogin}
+            >
+              Login
             </Link>
           </p>
           <SocialLogin />
-        </div>
-      </Container>
-    </div>
+        </form>
+      </div>
+    </Container>
   );
 };
 

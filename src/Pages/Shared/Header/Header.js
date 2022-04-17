@@ -8,10 +8,8 @@ import auth from "../../../Firebase.init";
 import { signOut } from "firebase/auth";
 
 const Header = () => {
-  const [user] = useAuthState(auth)
-  const handleSignOut = () =>[
-    signOut(auth)
-  ]
+  const [user] = useAuthState(auth);
+  const handleSignOut = () => [signOut(auth)];
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark">
       <Container>
@@ -31,7 +29,12 @@ const Header = () => {
               Blogs
             </Nav.Link>
             {user ? (
-              <Button onClick={handleSignOut} variant="warning">Sign Out</Button>
+              <div className="d-flex align-items-center">
+                <h5 className="text-white">{user.displayName}</h5>
+                <Button onClick={handleSignOut} variant="warning">
+                SignOut
+              </Button>
+              </div>
             ) : (
               <Nav.Link as={CustomLink} to="/login">
                 Login
