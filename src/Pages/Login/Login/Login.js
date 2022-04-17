@@ -2,13 +2,17 @@ import { sendPasswordResetEmail } from "firebase/auth";
 import { useState } from "react";
 import { Container } from "react-bootstrap";
 import { useSignInWithEmailAndPassword } from "react-firebase-hooks/auth";
-import { Link, useNavigate } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import auth from "../../../Firebase.init";
+import Loading from "../../Shared/Loading/Loading";
 import SocialLogin from "../../Shared/SocialLogin/SocialLogin";
 import "./Login.css";
+import "react-toastify/dist/ReactToastify.css";
+import { toast, ToastContainer } from "react-toastify";
 
 const Login = () => {
   const navigate = useNavigate();
+  const location = useLocation();
   const [signInWithEmailAndPassword, user, loading, error] =
     useSignInWithEmailAndPassword(auth);
   const [userInfo, setUserInfo] = useState({
@@ -44,22 +48,26 @@ const Login = () => {
       });
     }
   };
+  let from = location.state?.from?.pathname || "/";
   if (user) {
-    navigate("/");
+    navigate(from, { replace: true });
+  }
+  if (loading) {
+    return <Loading></Loading>;
   }
   const handleSubmit = (e) => {
     e.preventDefault();
     signInWithEmailAndPassword(userInfo.email, userInfo.password);
   };
-  // useEffect(() => {
-  //   if (error) {
-  //     toast(error?.message);
-  //   }
-  // }, [error]);
 
-  const handleResetPassword = () => {
-    sendPasswordResetEmail(userInfo.email);
-    alert("Email send");
+  const handleResetPassword = async() => {
+    if (userInfo.email) {
+      await sendPasswordResetEmail(userInfo.email);
+      toast("Email send");
+    }
+    else{
+      toast("Please enter your email")
+    }
   };
 
   return (
@@ -91,7 +99,16 @@ const Login = () => {
           )}
           {loading && <p className="text-white">loading...</p>}
           <p className="text-warning">{error?.message}</p>
-          <p className="text-white">Forget Password? <Link className="text-decoration-none text-warning" to="/login" onClick={handleResetPassword}>Reset Password</Link></p> 
+          <p className="text-white">
+            Forget Password?{" "}
+            <Link
+              className="text-decoration-none text-warning"
+              to="/login"
+              onClick={handleResetPassword}
+            >
+              Reset Password
+            </Link>
+          </p>
           <input type="submit" value="Login" className="input-submit" />
           <p className="text-white">
             Not a member?
@@ -100,6 +117,7 @@ const Login = () => {
             </Link>
           </p>
           <SocialLogin />
+          <ToastContainer />
         </form>
       </div>
     </Container>

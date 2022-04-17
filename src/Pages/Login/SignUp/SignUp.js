@@ -5,6 +5,7 @@ import { useCreateUserWithEmailAndPassword } from "react-firebase-hooks/auth";
 import { Link, useLocation, useNavigate } from "react-router-dom";
 import auth from "../../../Firebase.init";
 import SocialLogin from "../../Shared/SocialLogin/SocialLogin";
+import Loading from "../../Shared/Loading/Loading";
 
 const SignUp = () => {
   const [createUserWithEmailAndPassword, user, loading, error] =
@@ -124,6 +125,10 @@ const SignUp = () => {
               Login
             </Link>
           </p>
+          {
+            loading && <Loading></Loading>
+          }
+          <p className="text-warning">{error?.message}</p>
           <input type="submit" value="SignUP" className="input-submit" />
           <SocialLogin />
         </form>
